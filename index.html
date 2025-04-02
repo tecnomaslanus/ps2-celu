@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catálogo de Juegos</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-<link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
-<style>
+    <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
+    <style>
         body {
             font-family: nunito;
             text-align: center;
@@ -91,7 +91,7 @@
     </style>
 </head>
 <body>
-      <div class="header">
+    <div class="header">
         <input type="text" id="busqueda" placeholder="Buscar juego..." onkeyup="filtrarJuegos()">
         <div class="contador">
             Juegos seleccionados: <span id="contador">0</span>
@@ -105,33 +105,14 @@
         <h3>Juegos Seleccionados</h3>
         <ul id="lista-seleccionados"></ul>
     </div>
-    <div class="header">
-        <input type="text" id="busqueda" placeholder="Buscar juego..." onkeyup="filtrarJuegos()">
-<div class="filters">
-            <label><input type="checkbox" id="filterPS1" onchange="filtrarJuegos()"> PS1</label>
-            <label><input type="checkbox" id="filterPS2" onchange="filtrarJuegos()"> PS2</label>
-        </div>
-        <div>
-            <button onclick="guardarCSV()">Guardar1</button>
-            <button type="button" onclick="enviarCSV()">Enviar por correo</button>
-        </div>
-        <div class="contador">
-            Juegos seleccionados: <span id="contador">0</span>
-        </div>
-    </div>
-
-    <div class="catalogo-container">
-        <h2>Catálogo de Juegos</h2>
-        <div class="catalogo" id="catalogo"></div>
-    </div>
- <div class="seleccionados-container">
-        <h3>Juegos Seleccionados</h3>
-        <ul id="lista-seleccionados"></ul>
-    </div>
-    
 
     <script>
-       function cargarCatalogo() {
+        function toggleSeleccionados() {
+            const contenedor = document.getElementById('seleccionados-container');
+            contenedor.style.display = contenedor.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function cargarCatalogo() {
             fetch('list.csv')
                 .then(response => response.text())
                 .then(data => {
@@ -181,97 +162,6 @@
                 lista.appendChild(li);
             });
         }
-
-
-   function guardarCSV() {
-            let seleccionados = document.querySelectorAll('.item.selected');
-            let nombres = Array.from(seleccionados).map(item => item.getAttribute('data-nombre'));
-            
-            if (nombres.length === 0) {
-                alert("Seleccioná al menos un juego.");
-                return;
-            }
-
-            let csvContent = "data:text/csv;charset=utf-8," + nombres.join("\n");
-            let blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-            saveAs(blob, "juegos_seleccionados.csv");
-        }
-
-
-
-        
-
-
-        async function enviarCSV() {
-    let seleccionados = document.querySelectorAll('.item.selected');
-    let nombres = Array.from(seleccionados).map(item => item.getAttribute('data-nombre'));
-
-    if (nombres.length === 0) {
-        alert("Seleccioná al menos un juego.");
-        return;
-    }
-
-    let juegosSeleccionados = nombres.join("\n"); // Unir los nombres de los juegos seleccionados en un solo texto
-
-    let emailAddress = "usuario@email.com";  // 📌 PONER EL EMAIL AQUÍ
-    // Reemplaza con la URL de tu Formulario de Google
-    let formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSeZ-FcR37MdgkUqVe4mqZrYdnSXLcy7qI9JqYpEegrECPTnjw/formResponse";
-
-           
-
-    let formData = new URLSearchParams();
-    formData.append("entry.331571541", juegosSeleccionados);  // 📌 El dato que vas a enviar
-    formData.append("emailAddress", emailAddress);  // 📌 Agregar el email obligatorio
-
-    fetch(formUrl, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: formData.toString(),
-        mode: "no-cors"
-    })
-    .then(() => alert("Datos enviados correctamente"))
-    .catch(error => console.error("Error:", error));
-}
-
-     function filtrarJuegos() {
-    let input = document.getElementById("busqueda").value.toLowerCase();
-    let filterPS1 = document.getElementById("filterPS1").checked;
-    let filterPS2 = document.getElementById("filterPS2").checked;
-    let items = document.querySelectorAll(".item");
-
-    console.log(`Filtro activado: PS1=${filterPS1}, PS2=${filterPS2}`); // 🛠️ DEBUG
-
-    items.forEach(item => {
-        let nombre = item.getAttribute("data-nombre").toLowerCase();
-        let tipo = item.getAttribute("data-tipo"); // 📌 Ahora debería existir correctamente
-
-        console.log(`Analizando: ${nombre} - Tipo: ${tipo}`); // 🛠️ DEBUG
-
-        let matchTexto = nombre.includes(input);
-        let matchFiltro = (!filterPS1 && !filterPS2) || 
-                          (filterPS1 && tipo === "CD") || 
-                          (filterPS2 && tipo === "DVD");
-
-        item.style.display = matchTexto && matchFiltro ? "block" : "none";
-    });
-}
-        function deseleccionarJuego(nombre) {
-            document.querySelectorAll('.item.selected').forEach(item => {
-                if (item.getAttribute('data-nombre') === nombre) {
-                    item.classList.remove('selected');
-                }
-            });
-            actualizarContador();
-        }
-
-         function toggleSeleccionados() {
-            const contenedor = document.getElementById('seleccionados-container');
-            contenedor.style.display = contenedor.style.display === 'none' ? 'block' : 'none';
-        }
-
-     
 
         window.onload = cargarCatalogo;
     </script>
