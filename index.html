@@ -6,106 +6,105 @@
     <title>Catálogo de Juegos</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
-    <style>
-       body { font-family: nunito; text-align: center; margin-top: 50px; 
+<style>
+        body {
+            font-family: nunito;
+            text-align: center;
+            margin: 0;
             background-image: url('https://raw.githubusercontent.com/tecnomaslanus/ps2/main/imagenes/fondo.jpg');
-    background-size: cover; /* Ajusta la imagen para cubrir toda la pantalla */
-    background-position: center; /* Centra la imagen */
-    background-repeat: no-repeat; /* Evita que la imagen se repita */
-    background-attachment: fixed; /* Fija la imagen al fondo */
-            }
-       .catalogo { 
-    display: flex; 
-    flex-wrap: wrap; 
-    justify-content: flex-start; 
-    gap: 1px;
-    margin-top: 20px;
-    max-width: 1050px; /* 150px * 6 items + pequeños márgenes */
-}
-        .item { width: 150px; cursor: pointer; padding: 10px; border: 2px solid #ccc; border-radius: 8px; background-color: #fff;}
-        .item img { width: 100%; border-radius: 8px; }
-        .selected { border-color: #007BFF; background-color: #E6F0FF; }
-        input { padding: 8px; width: 200px; margin-top: 10px; }
-        button { padding: 10px 20px; font-size: 16px; cursor: pointer; margin: 10px; }
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px; background-color: #f4f4f4; position: fixed; top: 0; width: 100%; z-index: 1000; }
-       .contador {
-    font-size: 18px;
-    background-color: rgba(255, 255, 255, 0.8);
-    padding: 5px 10px;
-    border-radius: 5px;
-    position: absolute;
-    left: 270px; /* Ajusta el valor para moverlo más a la izquierda */
-    top: 30px; /* Ajusta la posición vertical para alinearlo con los otros elementos */
-}
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
 
-        filters {
-    display: flex;
-    gap: 10px;
-    background-color: #fff; /* Opcional, fondo blanco */
-    padding: 5px;
-    border-radius: 5px;
-}
-
-        button {
-  background-color: #ffcb03; /* Green */
-  border: none;
-  color: #5d2783;
-  padding: 15px 15px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  border-radius: 8px;
-  font-size: 18px;
-  transition-duration: 0.4s;
-}
-
-    button:hover{
-        background-color: #ffdd5a;
-  color: #5d2783;
-    }
-
-.seleccionados-container {
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #f4f4f4;
             position: fixed;
-            top: 80px;
-            right: 10px;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .catalogo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            padding: 20px;
+            margin-top: 60px;
+        }
+
+        .item {
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            background-color: #fff;
+            cursor: pointer;
+        }
+
+        .contador {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .seleccionados-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
             width: 300px;
             background-color: #f4f4f4;
             padding: 10px;
             border-radius: 8px;
             max-height: 80vh;
             overflow-y: auto;
-            box-shadow: -2px 2px 10px rgba(0, 0, 0, 0.1);
+            display: none;
         }
-        .seleccionados-container h3 { margin: 0; padding-bottom: 10px; }
-        .seleccionados-container ul { list-style-type: none; padding: 0; }
 
+        .boton-flotante {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            padding: 10px;
+            border-radius: 50%;
+            background-color: #ffcb03;
+            cursor: pointer;
+        }
 
-        .seleccionados-container li {
-    display: grid;
-    align-items: center;
-    grid-template-columns: 25px auto; /* Checkbox fijo, texto flexible */
-    gap: 10px;
-    margin-bottom: 10px;
-    overflow: hidden; /* Evita desbordamiento */
-}
+        @media (max-width: 768px) {
+            .catalogo {
+                grid-template-columns: repeat(2, 1fr);
+            }
 
-.seleccionados-container li input {
-    width: 15px; /* Tamaño fijo del checkbox */
-    height: 20px;
-}
-
-.seleccionados-container li span {
-    white-space: nowrap; /* Evita saltos de línea */
-    overflow: hidden;
-    text-overflow: ellipsis; /* Agrega "..." si el texto es muy largo */
-    display: block;
-    max-width: 200px; /* Ajusta el ancho máximo según necesites */
-}
-        .catalogo-container { margin-top: 80px; }
+            .contador, .boton-flotante {
+                right: 10px;
+                left: 10px;
+            }
+        }
     </style>
 </head>
 <body>
-    
+      <div class="header">
+        <input type="text" id="busqueda" placeholder="Buscar juego..." onkeyup="filtrarJuegos()">
+        <div class="contador">
+            Juegos seleccionados: <span id="contador">0</span>
+        </div>
+        <div class="boton-flotante" onclick="toggleSeleccionados()">📋</div>
+    </div>
+
+    <div class="catalogo" id="catalogo"></div>
+
+    <div class="seleccionados-container" id="seleccionados-container">
+        <h3>Juegos Seleccionados</h3>
+        <ul id="lista-seleccionados"></ul>
+    </div>
     <div class="header">
         <input type="text" id="busqueda" placeholder="Buscar juego..." onkeyup="filtrarJuegos()">
 <div class="filters">
@@ -113,7 +112,7 @@
             <label><input type="checkbox" id="filterPS2" onchange="filtrarJuegos()"> PS2</label>
         </div>
         <div>
-            <button onclick="guardarCSV()">Guardar</button>
+            <button onclick="guardarCSV()">Guardar1</button>
             <button type="button" onclick="enviarCSV()">Enviar por correo</button>
         </div>
         <div class="contador">
@@ -133,57 +132,55 @@
 
     <script>
        function cargarCatalogo() {
-    fetch('list.csv')
-        .then(response => response.text())
-        .then(data => {
-            let juegos = data.split('\n');
-            juegos.forEach((juego, index) => {
-                if (index > 0 && juego.trim() !== '') {
-                    let partes = juego.split(',');
-                    let nombre = partes[0]?.trim() || "Desconocido";
-                    let codigo = partes[1]?.trim() || "000";
-                    let tipo = partes[2]?.trim() || "Desconocido"; // CD = PS1, DVD = PS2
+            fetch('list.csv')
+                .then(response => response.text())
+                .then(data => {
+                    let juegos = data.split('\n');
+                    juegos.forEach((juego, index) => {
+                        if (index > 0 && juego.trim() !== '') {
+                            let partes = juego.split(',');
+                            let nombre = partes[0]?.trim() || "Desconocido";
+                            let codigo = partes[1]?.trim() || "000";
 
-                    console.log(`Juego cargado: ${nombre} - Tipo: ${tipo}`); // 🛠️ DEBUG
+                            let item = document.createElement('div');
+                            item.classList.add('item');
+                            item.setAttribute('data-nombre', nombre);
 
-                    let item = document.createElement('div');
-                    item.classList.add('item');
-                    item.setAttribute('data-nombre', nombre);
-                    item.setAttribute('data-tipo', tipo); // ✅ Agregamos el tipo
+                            let img = document.createElement('img');
+                            img.src = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img/${codigo}_COV.jpg`;
 
-                    let img = document.createElement('img');
-                    img.src = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img/${codigo}_COV.jpg`;
-                    img.onerror = () => {
-                        img.src = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img/${codigo}_COV.png`;
-                        img.onerror = () => {
-                            img.src = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/${codigo}_COV.jpg`;
-                            img.onerror = () => {
-                                img.src = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/${codigo}_COV.png`;
-                                img.onerror = () => {
-                                    img.src = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/default.jpg`;
-                                };
+                            let p = document.createElement('p');
+                            p.textContent = nombre;
+
+                            item.appendChild(img);
+                            item.appendChild(p);
+                            document.getElementById('catalogo').appendChild(item);
+
+                            item.onclick = () => {
+                                item.classList.toggle('selected');
+                                actualizarContador();
                             };
-                        };
-                    };
-
-                    let p = document.createElement('p');
-                    p.textContent = nombre;
-
-                    item.appendChild(img);
-                    item.appendChild(p);
-                    document.getElementById('catalogo').appendChild(item);
-                }
-            });
-
-            document.querySelectorAll('.item').forEach(item => {
-                item.addEventListener('click', () => {
-                    item.classList.toggle('selected');
-                    actualizarContador();
+                        }
+                    });
                 });
+        }
+
+        function actualizarContador() {
+            let seleccionados = document.querySelectorAll('.item.selected');
+            document.getElementById('contador').textContent = seleccionados.length;
+            actualizarListaSeleccionados();
+        }
+
+        function actualizarListaSeleccionados() {
+            let lista = document.getElementById('lista-seleccionados');
+            lista.innerHTML = '';
+            document.querySelectorAll('.item.selected').forEach(item => {
+                let nombre = item.getAttribute('data-nombre');
+                let li = document.createElement('li');
+                li.textContent = nombre;
+                lista.appendChild(li);
             });
-        })
-        .catch(error => console.error('Error al cargar el CSV:', error));
-}
+        }
 
 
    function guardarCSV() {
@@ -201,21 +198,7 @@
         }
 
 
-  function actualizarListaSeleccionados() {
-            let lista = document.getElementById("lista-seleccionados");
-            lista.innerHTML = "";
-            document.querySelectorAll(".item.selected").forEach(item => {
-                let nombre = item.getAttribute("data-nombre");
-                let li = document.createElement("li");
-                let checkbox = document.createElement("input");
-                checkbox.type = "checkbox";
-                checkbox.checked = true;
-                checkbox.onclick = () => deseleccionarJuego(nombre);
-                li.appendChild(checkbox);
-                li.appendChild(document.createTextNode(" " + nombre));
-                lista.appendChild(li);
-            });
-        }
+
         
 
 
@@ -283,13 +266,12 @@
             actualizarContador();
         }
 
-        
-
-          function actualizarContador() {
-            let seleccionados = document.querySelectorAll('.item.selected');
-            document.getElementById('contador').textContent = seleccionados.length;
-            actualizarListaSeleccionados();
+         function toggleSeleccionados() {
+            const contenedor = document.getElementById('seleccionados-container');
+            contenedor.style.display = contenedor.style.display === 'none' ? 'block' : 'none';
         }
+
+     
 
         window.onload = cargarCatalogo;
     </script>
