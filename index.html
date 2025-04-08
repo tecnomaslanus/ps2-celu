@@ -120,10 +120,11 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <input type="text" id="busqueda" placeholder="Buscar juego..." onkeyup="filtrarJuegos()">
-        <button id="boton-enviar" onclick="enviarCSV()">Enviar lista de juegos2</button>
-    </div>
+  <div class="header">
+    <input type="text" id="busqueda" placeholder="Buscar juego..." onkeyup="filtrarJuegos()">
+    <input type="text" id="nombre-usuario" placeholder="Tu nombre" required>
+    <button id="boton-enviar" onclick="enviarCSV()">Enviar lista de juegos</button>
+</div>
 
     <div class="catalogo" id="catalogo"></div>
 
@@ -181,18 +182,27 @@ img.onerror = function () {
         function actualizarContador() {
             actualizarListaSeleccionados();
         }
+function actualizarListaSeleccionados() {
+    let lista = document.getElementById('lista-seleccionados');
+    lista.innerHTML = '';
+    document.querySelectorAll('.item.selected').forEach(item => {
+        let nombre = item.getAttribute('data-nombre');
+        let li = document.createElement('li');
 
-        function actualizarListaSeleccionados() {
-            let lista = document.getElementById('lista-seleccionados');
-            lista.innerHTML = '';
-            document.querySelectorAll('.item.selected').forEach(item => {
-                let nombre = item.getAttribute('data-nombre');
-                let li = document.createElement('li');
-                li.textContent = nombre;
-                lista.appendChild(li);
-            });
-        }
+        let checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = true;
+        checkbox.onclick = () => {
+            item.classList.remove('selected');
+            actualizarListaSeleccionados();
+        };
 
+        li.appendChild(checkbox);
+        li.appendChild(document.createTextNode(' ' + nombre));
+        lista.appendChild(li);
+    });
+}
+       
         function filtrarJuegos() {
             const termino = document.getElementById('busqueda').value.toLowerCase();
             document.querySelectorAll('.item').forEach(item => {
@@ -222,6 +232,11 @@ img.onerror = function () {
         }
 
         let juegosSeleccionados = nombres.join("\n"); // Unir los nombres de los juegos seleccionados en un solo texto
+let nombreUsuario = document.getElementById("nombre-usuario").value.trim();
+if (nombreUsuario === "") {
+    alert("Por favor ingresá tu nombre.");
+    return;
+}
 
         let emailAddress = "usuario@email.com";  // 📌 PONÉ TU EMAIL
         let formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSeZ-FcR37MdgkUqVe4mqZrYdnSXLcy7qI9JqYpEegrECPTnjw/formResponse"; // 📌 URL del formulario
