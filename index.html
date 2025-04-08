@@ -122,7 +122,7 @@
 <body>
     <div class="header">
         <input type="text" id="busqueda" placeholder="Buscar juego..." onkeyup="filtrarJuegos()">
-        <button id="boton-enviar" onclick="descargarLista()">Enviar lista de juegos1</button>
+        <button id="boton-enviar" onclick="enviarCSV()">Enviar lista de juegos2</button>
     </div>
 
     <div class="catalogo" id="catalogo"></div>
@@ -208,6 +208,35 @@
             saveAs(blob, 'juegos_seleccionados.txt');
         }
 
+         async function enviarCSV() {
+        let seleccionados = document.querySelectorAll('.item.selected');
+        let nombres = Array.from(seleccionados).map(item => item.getAttribute('data-nombre'));
+
+        if (nombres.length === 0) {
+            alert("Seleccioná al menos un juego.");
+            return;
+        }
+
+        let juegosSeleccionados = nombres.join("\n"); // Unir los nombres de los juegos seleccionados en un solo texto
+
+        let emailAddress = "usuario@email.com";  // 📌 PONÉ TU EMAIL
+        let formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSeZ-FcR37MdgkUqVe4mqZrYdnSXLcy7qI9JqYpEegrECPTnjw/formResponse"; // 📌 URL del formulario
+
+        let formData = new URLSearchParams();
+        formData.append("entry.331571541", juegosSeleccionados);  // 📌 Reemplazá con el ID correcto del campo del form
+        formData.append("emailAddress", emailAddress);  // 📌 Si tu formulario requiere este campo
+
+        fetch(formUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: formData.toString(),
+            mode: "no-cors"
+        })
+        .then(() => alert("Datos enviados correctamente"))
+        .catch(error => console.error("Error:", error));
+    }
         window.onload = cargarCatalogo;
     </script>
 </body>
