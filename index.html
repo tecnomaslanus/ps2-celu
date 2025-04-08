@@ -155,8 +155,12 @@
                             item.classList.add('item');
                             item.setAttribute('data-nombre', nombre);
 
-                            let img = document.createElement('img');
-                            img.src = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img/${codigo}_COV.jpg`;
+                           let img = document.createElement('img');
+img.src = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img/${codigo}_COV.jpg`;
+img.onerror = function () {
+    this.onerror = null;
+    this.src = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/${codigo}_COV.jpg`;
+};
 
                             let p = document.createElement('p');
                             p.textContent = nombre;
