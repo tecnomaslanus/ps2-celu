@@ -123,13 +123,14 @@
   <div class="header">
     <input type="text" id="busqueda" placeholder="Buscar juego..." onkeyup="filtrarJuegos()">
     <input type="text" id="nombre-usuario" placeholder="Tu nombre" required>
-    <button id="boton-enviar" onclick="enviarCSV()">Enviar lista de juegos1</button>
+    <button id="boton-enviar" onclick="enviarCSV()">Enviar lista de juegos</button>
 </div>
 
     <div class="catalogo" id="catalogo"></div>
 
-    <div class="boton-flotante" onclick="toggleSeleccionados()">📋</div>
-
+    <div class="boton-flotante" onclick="toggleSeleccionados()">📋
+ <span id="contador-juegos" class="contador-burbuja">0</span>
+        </div>
     <div class="seleccionados-container" id="seleccionados-container">
         <h3>Juegos Seleccionados</h3>
         <ul id="lista-seleccionados"></ul>
