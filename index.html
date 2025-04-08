@@ -90,7 +90,21 @@
             cursor: pointer;
             z-index: 1000;
         }
-
+.contador-burbuja {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    font-size: 14px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 20px;
+    font-weight: bold;
+    display: none;
+}
         .seleccionados-container {
             position: fixed;
             bottom: 80px;
@@ -180,9 +194,18 @@ img.onerror = function () {
                 });
         }
 
-        function actualizarContador() {
-            actualizarListaSeleccionados();
-        }
+      function actualizarContador() {
+    actualizarListaSeleccionados();
+
+    let cantidad = document.querySelectorAll('.item.selected').length;
+    const burbuja = document.getElementById('contador-juegos');
+    if (cantidad > 0) {
+        burbuja.textContent = cantidad;
+        burbuja.style.display = 'block';
+    } else {
+        burbuja.style.display = 'none';
+    }
+}
 function actualizarListaSeleccionados() {
     let lista = document.getElementById('lista-seleccionados');
     lista.innerHTML = '';
