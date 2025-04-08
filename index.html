@@ -244,6 +244,8 @@ if (nombreUsuario === "") {
         let formData = new URLSearchParams();
         formData.append("entry.331571541", juegosSeleccionados);  // 📌 Reemplazá con el ID correcto del campo del form
         formData.append("emailAddress", emailAddress);  // 📌 Si tu formulario requiere este campo
+             formData.append("entry.123456789", nombreUsuario); // 📌 Reemplazá con el ID correcto de tu campo de nombre
+
 
         fetch(formUrl, {
             method: "POST",
