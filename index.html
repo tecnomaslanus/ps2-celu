@@ -7,85 +7,114 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: nunito;
-            text-align: center;
             margin: 0;
-            background-image: url('https://raw.githubusercontent.com/tecnomaslanus/ps2/main/imagenes/fondo.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
+            background: #f9f9f9;
         }
 
         .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            background-color: #f4f4f4;
-            position: fixed;
+            position: sticky;
             top: 0;
+            background-color: #fff;
+            padding: 10px;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        #busqueda {
+            padding: 10px;
+            font-size: 16px;
             width: 100%;
-            z-index: 1000;
+        }
+
+        #boton-enviar {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
         }
 
         .catalogo {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 10px;
-            padding: 20px;
-            margin-top: 60px;
+            padding: 10px;
         }
 
         .item {
-            padding: 10px;
             border: 2px solid #ccc;
             border-radius: 8px;
             background-color: #fff;
             cursor: pointer;
+            overflow: hidden;
         }
 
-        .contador {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: #fff;
-            padding: 10px;
-            border-radius: 8px;
+        .item.selected {
+            border-color: #28a745;
         }
 
-        .seleccionados-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 300px;
-            background-color: #f4f4f4;
-            padding: 10px;
-            border-radius: 8px;
-            max-height: 80vh;
-            overflow-y: auto;
-            display: none;
+        .item img {
+            width: 100%;
+            display: block;
+        }
+
+        .item p {
+            margin: 0;
+            padding: 8px;
+            font-size: 14px;
         }
 
         .boton-flotante {
             position: fixed;
             bottom: 20px;
-            left: 20px;
-            padding: 10px;
-            border-radius: 50%;
+            right: 20px;
+            width: 50px;
+            height: 50px;
             background-color: #ffcb03;
+            border-radius: 50%;
+            font-size: 24px;
+            text-align: center;
+            line-height: 50px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
             cursor: pointer;
+            z-index: 1000;
         }
 
-        @media (max-width: 768px) {
-            .catalogo {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        .seleccionados-container {
+            position: fixed;
+            bottom: 80px;
+            right: 10px;
+            width: 90%;
+            max-width: 400px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 10px;
+            max-height: 60vh;
+            overflow-y: auto;
+            display: none;
+            z-index: 999;
+        }
 
-            .contador, .boton-flotante {
-                right: 10px;
-                left: 10px;
+        ul {
+            text-align: left;
+            padding-left: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .catalogo {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             }
         }
     </style>
@@ -93,13 +122,12 @@
 <body>
     <div class="header">
         <input type="text" id="busqueda" placeholder="Buscar juego..." onkeyup="filtrarJuegos()">
-        <div class="contador">
-            Juegos seleccionados: <span id="contador">0</span>
-        </div>
-        <div class="boton-flotante" onclick="toggleSeleccionados()">📋</div>
+        <button id="boton-enviar" onclick="descargarLista()">Enviar lista de juegos1</button>
     </div>
 
     <div class="catalogo" id="catalogo"></div>
+
+    <div class="boton-flotante" onclick="toggleSeleccionados()">📋</div>
 
     <div class="seleccionados-container" id="seleccionados-container">
         <h3>Juegos Seleccionados</h3>
@@ -147,8 +175,6 @@
         }
 
         function actualizarContador() {
-            let seleccionados = document.querySelectorAll('.item.selected');
-            document.getElementById('contador').textContent = seleccionados.length;
             actualizarListaSeleccionados();
         }
 
@@ -161,6 +187,25 @@
                 li.textContent = nombre;
                 lista.appendChild(li);
             });
+        }
+
+        function filtrarJuegos() {
+            const termino = document.getElementById('busqueda').value.toLowerCase();
+            document.querySelectorAll('.item').forEach(item => {
+                const nombre = item.getAttribute('data-nombre').toLowerCase();
+                item.style.display = nombre.includes(termino) ? '' : 'none';
+            });
+        }
+
+        function descargarLista() {
+            let seleccionados = document.querySelectorAll('.item.selected');
+            if (seleccionados.length === 0) {
+                alert("No seleccionaste ningún juego.");
+                return;
+            }
+            let lista = Array.from(seleccionados).map(item => item.getAttribute('data-nombre')).join('\n');
+            let blob = new Blob([lista], { type: 'text/plain;charset=utf-8' });
+            saveAs(blob, 'juegos_seleccionados.txt');
         }
 
         window.onload = cargarCatalogo;
