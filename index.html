@@ -137,7 +137,7 @@
   <div class="header">
     <input type="text" id="busqueda" placeholder="Buscar juego..." onkeyup="filtrarJuegos()">
     <input type="text" id="nombre-usuario" placeholder="Tu nombre" required>
-    <button id="boton-enviar" onclick="enviarCSV()">Enviar lista de juegos1</button>
+    <button id="boton-enviar" onclick="enviarCSV()">Enviar lista de juegos2</button>
 </div>
 
     <div class="catalogo" id="catalogo"></div>
@@ -173,7 +173,7 @@
 
                     // Crear imagen con carga paralela optimizada
                     let img = document.createElement('img');
-                    img.loading = "lazy";
+                    
 
                     let primarySrc = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img/${codigo}_COV.jpg`;
                     let secondarySrc = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/${codigo}_COV.jpg`;
