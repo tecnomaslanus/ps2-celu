@@ -164,8 +164,7 @@
 
         function cargarCatalogo() {
     fetch('list.csv')
-        iniciarLazyLoading()
-        .then(response => response.text())
+             .then(response => response.text())
         .then(data => {
             let juegos = data.split('\n');
             juegos.forEach((juego, index) => {
@@ -228,6 +227,8 @@ img.onerror = function () {
                     item.onclick = () => {
                         item.classList.toggle('selected');
                         actualizarContador();
+                        iniciarLazyLoading();
+
                     };
                 }
             });
