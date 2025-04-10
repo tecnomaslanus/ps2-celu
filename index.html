@@ -125,7 +125,13 @@
             text-align: left;
             padding-left: 20px;
         }
-
+.lazy-img {
+    opacity: 0;
+    transition: opacity 0.5s ease-in;
+}
+.lazy-img.loaded {
+    opacity: 1;
+}
         @media (min-width: 768px) {
             .catalogo {
                 grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -137,7 +143,7 @@
   <div class="header">
     <input type="text" id="busqueda" placeholder="Buscar juego..." onkeyup="filtrarJuegos()">
     <input type="text" id="nombre-usuario" placeholder="Tu nombre" required>
-    <button id="boton-enviar" onclick="enviarCSV()">Enviar lista de juegos</button>
+    <button id="boton-enviar" onclick="enviarCSV()">Enviar lista de juegos3</button>
 </div>
 
     <div class="catalogo" id="catalogo"></div>
@@ -158,6 +164,7 @@
 
         function cargarCatalogo() {
     fetch('list.csv')
+        iniciarLazyLoading();
         .then(response => response.text())
         .then(data => {
             let juegos = data.split('\n');
@@ -172,11 +179,13 @@
                     item.setAttribute('data-nombre', nombre);
 
                     // Crear imagen con carga paralela optimizada
-                    let img = document.createElement('img');
-                    img.loading = "lazy";
-
-                    let primarySrc = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img/${codigo}_COV.jpg`;
-                    let secondarySrc = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/${codigo}_COV.jpg`;
+                   let img = document.createElement('img');
+img.setAttribute('data-src', `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img/${codigo}_COV.jpg`);
+img.classList.add('lazy-img');
+img.onerror = function () {
+    this.onerror = null;
+    this.src = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/${codigo}_COV.jpg`;
+};
 
                     let testImg1 = new Image();
                     let testImg2 = new Image();
@@ -314,6 +323,30 @@ if (nombreUsuario === "") {
         .then(() => alert("Datos enviados correctamente"))
         .catch(error => console.error("Error:", error));
     }
+
+        function iniciarLazyLoading() {
+    const imgs = document.querySelectorAll('img.lazy-img');
+
+    const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                const src = img.getAttribute('data-src');
+                if (src) {
+                    img.src = src;
+                    img.onload = () => img.classList.add('loaded');
+                    obs.unobserve(img); // Dejamos de observarla después de cargar
+                }
+            }
+        });
+    }, {
+        rootMargin: "100px" // Carga un poquito antes de entrar
+    });
+
+    imgs.forEach(img => observer.observe(img));
+}
+
+        
         window.onload = cargarCatalogo;
     </script>
 </body>
