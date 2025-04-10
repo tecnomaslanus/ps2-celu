@@ -164,7 +164,7 @@
 
         function cargarCatalogo() {
     fetch('list.csv')
-        iniciarLazyLoading();
+        iniciarLazyLoading()
         .then(response => response.text())
         .then(data => {
             let juegos = data.split('\n');
