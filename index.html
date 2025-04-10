@@ -137,7 +137,7 @@
   <div class="header">
     <input type="text" id="busqueda" placeholder="Buscar juego..." onkeyup="filtrarJuegos()">
     <input type="text" id="nombre-usuario" placeholder="Tu nombre" required>
-    <button id="boton-enviar" onclick="enviarCSV()">Enviar lista de juegos</button>
+    <button id="boton-enviar" onclick="enviarCSV()">Enviar lista de juegos1</button>
 </div>
 
     <div class="catalogo" id="catalogo"></div>
@@ -157,42 +157,73 @@
         }
 
         function cargarCatalogo() {
-            fetch('list.csv')
-                .then(response => response.text())
-                .then(data => {
-                    let juegos = data.split('\n');
-                    juegos.forEach((juego, index) => {
-                        if (index > 0 && juego.trim() !== '') {
-                            let partes = juego.split(',');
-                            let nombre = partes[0]?.trim() || "Desconocido";
-                            let codigo = partes[1]?.trim() || "000";
+    fetch('list.csv')
+        .then(response => response.text())
+        .then(data => {
+            let juegos = data.split('\n');
+            juegos.forEach((juego, index) => {
+                if (index > 0 && juego.trim() !== '') {
+                    let partes = juego.split(',');
+                    let nombre = partes[0]?.trim() || "Desconocido";
+                    let codigo = partes[1]?.trim() || "000";
 
-                            let item = document.createElement('div');
-                            item.classList.add('item');
-                            item.setAttribute('data-nombre', nombre);
+                    let item = document.createElement('div');
+                    item.classList.add('item');
+                    item.setAttribute('data-nombre', nombre);
 
-                           let img = document.createElement('img');
-img.src = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img/${codigo}_COV.jpg`;
-img.onerror = function () {
-    this.onerror = null;
-    this.src = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/${codigo}_COV.jpg`;
-};
+                    // Crear imagen con carga paralela optimizada
+                    let img = document.createElement('img');
+                    img.loading = "lazy";
 
-                            let p = document.createElement('p');
-                            p.textContent = nombre;
+                    let primarySrc = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img/${codigo}_COV.jpg`;
+                    let secondarySrc = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/${codigo}_COV.jpg`;
 
-                            item.appendChild(img);
-                            item.appendChild(p);
-                            document.getElementById('catalogo').appendChild(item);
+                    let testImg1 = new Image();
+                    let testImg2 = new Image();
+                    let cargada = false;
 
-                            item.onclick = () => {
-                                item.classList.toggle('selected');
-                                actualizarContador();
-                            };
+                    testImg1.onload = () => {
+                        if (!cargada) {
+                            img.src = primarySrc;
+                            cargada = true;
                         }
-                    });
-                });
-        }
+                    };
+                    testImg2.onload = () => {
+                        if (!cargada) {
+                            img.src = secondarySrc;
+                            cargada = true;
+                        }
+                    };
+                    testImg1.onerror = testImg2.onerror = () => {
+                        if (!cargada) {
+                            img.src = 'https://via.placeholder.com/150x200?text=No+img';
+                            cargada = true;
+                        }
+                    };
+
+                    testImg1.src = primarySrc;
+                    testImg2.src = secondarySrc;
+
+                    // Agregar imagen al item
+                    item.appendChild(img);
+
+                    // Agregar nombre del juego
+                    let p = document.createElement('p');
+                    p.textContent = nombre;
+                    item.appendChild(p);
+
+                    // Agregar al catálogo
+                    document.getElementById('catalogo').appendChild(item);
+
+                    // Hacerlo seleccionable
+                    item.onclick = () => {
+                        item.classList.toggle('selected');
+                        actualizarContador();
+                    };
+                }
+            });
+        });
+}
 
       function actualizarContador() {
     actualizarListaSeleccionados();
