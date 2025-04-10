@@ -216,9 +216,10 @@ function actualizarListaSeleccionados() {
         let checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.checked = true;
-        checkbox.onclick = () => {
-            item.classList.remove('selected');
-            actualizarListaSeleccionados();
+       checkbox.onclick = () => {
+    item.classList.remove('selected');
+    actualizarContador(); // <-- Esto actualiza tanto la lista como el número
+};
         };
 
         li.appendChild(checkbox);
