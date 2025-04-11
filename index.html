@@ -105,6 +105,31 @@
     font-weight: bold;
     display: none;
 }
+
+
+        .boton-filtro {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background-color: #ffffff;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    cursor: pointer;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.boton-filtro img {
+    width: 30px;
+    height: 30px;
+    pointer-events: none;
+}
         .seleccionados-container {
             position: fixed;
             bottom: 80px;
@@ -143,6 +168,12 @@
     <div class="catalogo" id="catalogo"></div>
 
     <div class="boton-flotante" onclick="toggleSeleccionados()">📋
+        <div class="boton-filtro" id="filtro-ps1" onclick="filtrarPorFormato('CD')">
+    <img src="ruta/a/tu_icono_ps1.png" alt="PS1">
+</div>
+<div class="boton-filtro" id="filtro-ps2" onclick="filtrarPorFormato('DVD')">
+    <img src="ruta/a/tu_icono_ps2.png" alt="PS2">
+</div>
  <span id="contador-juegos" class="contador-burbuja">0</span>
         </div>
     <div class="seleccionados-container" id="seleccionados-container">
@@ -166,7 +197,8 @@
                             let partes = juego.split(',');
                             let nombre = partes[0]?.trim() || "Desconocido";
                             let codigo = partes[1]?.trim() || "000";
-
+let tipo = partes[2]?.trim() || "";
+item.setAttribute('data-formato', tipo);
                             let item = document.createElement('div');
                             item.classList.add('item');
                             item.setAttribute('data-nombre', nombre);
@@ -205,6 +237,14 @@ img.onerror = function () {
     } else {
         burbuja.style.display = 'none';
     }
+}
+
+
+        function filtrarPorFormato(formato) {
+    document.querySelectorAll('.item').forEach(item => {
+        const tipo = item.getAttribute('data-formato');
+        item.style.display = (tipo === formato) ? '' : 'none';
+    });
 }
 function actualizarListaSeleccionados() {
     let lista = document.getElementById('lista-seleccionados');
