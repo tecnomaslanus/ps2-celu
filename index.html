@@ -137,7 +137,7 @@
   <div class="header">
     <input type="text" id="busqueda" placeholder="Buscar juego..." onkeyup="filtrarJuegos()">
     <input type="text" id="nombre-usuario" placeholder="Tu nombre" required>
-    <button id="boton-enviar" onclick="enviarCSV()">Enviar lista de juegos23</button>
+    <button id="boton-enviar" onclick="enviarCSV()">Enviar lista de juegos3</button>
 </div>
 
     <div class="catalogo" id="catalogo"></div>
@@ -226,7 +226,7 @@ function actualizarListaSeleccionados() {
         checkbox.checked = true;
      checkbox.onclick = () => {
     item.classList.remove('selected');
-    actualizarListaSeleccionados();
+    actualizarContador(); // <-- Esto actualiza tanto la lista como el número
 };
         
 
