@@ -125,7 +125,14 @@
             text-align: left;
             padding-left: 20px;
         }
+.lazy-img {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+  }
 
+  .lazy-img.loaded {
+    opacity: 1;
+  }
         @media (min-width: 768px) {
             .catalogo {
                 grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -137,7 +144,7 @@
   <div class="header">
     <input type="text" id="busqueda" placeholder="Buscar juego..." onkeyup="filtrarJuegos()">
     <input type="text" id="nombre-usuario" placeholder="Tu nombre" required>
-    <button id="boton-enviar" onclick="enviarCSV()">Enviar lista de juegos3</button>
+    <button id="boton-enviar" onclick="enviarCSV()">Enviar lista de juegos34</button>
 </div>
 
     <div class="catalogo" id="catalogo"></div>
@@ -172,18 +179,9 @@
                     item.setAttribute('data-nombre', nombre);
 
                     let img = document.createElement('img');
-                    img.src = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img/${codigo}_COV.jpg`;
-
-                    img.onerror = function () {
-                        img.onerror = function () {
-                            img.onerror = function () {
-                                img.onerror = null;
-                                img.src = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/${codigo}_COV.png`;
-                            };
-                            img.src = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img/${codigo}_COV.png`;
-                        };
-                        img.src = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/${codigo}_COV.jpg`;
-                    };
+img.setAttribute('data-codigo', codigo);
+img.classList.add('lazy-img');
+observer.observe(img);
 
                     let p = document.createElement('p');
                     p.textContent = nombre;
@@ -201,7 +199,41 @@
         });
 }
 
+const observer = new IntersectionObserver((entries, obs) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const img = entry.target;
+      cargarImagen(img);
+      obs.unobserve(img);
+    }
+  });
+});
 
+function cargarImagen(img) {
+  const codigo = img.getAttribute('data-codigo');
+  let intentos = [
+    `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img/${codigo}_COV.jpg`,
+    `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/${codigo}_COV.jpg`,
+    `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img/${codigo}_COV.png`,
+    `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/${codigo}_COV.png`,
+    `https://github.com/tecnomaslanus/ps2/blob/main/img2/default.jpg`
+  ];
+
+  let i = 0;
+
+  function intentarCargar() {
+    if (i >= intentos.length) return;
+
+    img.src = intentos[i];
+    img.onerror = () => {
+      i++;
+      intentarCargar();
+    };
+    img.onload = () => img.classList.add('loaded');
+  }
+
+  intentarCargar();
+}
       function actualizarContador() {
     actualizarListaSeleccionados();
 
