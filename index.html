@@ -198,11 +198,11 @@
                             let nombre = partes[0]?.trim() || "Desconocido";
                             let codigo = partes[1]?.trim() || "000";
 let tipo = partes[2]?.trim() || "";
-item.setAttribute('data-formato', tipo);
+
                             let item = document.createElement('div');
                             item.classList.add('item');
                             item.setAttribute('data-nombre', nombre);
-
+item.setAttribute('data-formato', tipo);
                            let img = document.createElement('img');
 img.src = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img/${codigo}_COV.jpg`;
 img.onerror = function () {
