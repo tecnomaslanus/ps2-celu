@@ -107,14 +107,12 @@
 }
 
 
-        .boton-filtro {
+   .boton-filtro {
     position: fixed;
-    bottom: 90px;
-    right: 20px;
+    bottom: 20px;
     width: 50px;
     height: 50px;
     background-color: #ffffff;
-    border: 2px solid #ccc;
     border-radius: 50%;
     box-shadow: 0 2px 5px rgba(0,0,0,0.3);
     cursor: pointer;
@@ -122,13 +120,21 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 10px;
+    padding: 5px;
 }
 
 .boton-filtro img {
-    width: 30px;
-    height: 30px;
-    pointer-events: none;
+    width: 100%;
+    height: auto;
+    border-radius: 50%;
+}
+
+.boton-ps1 {
+    right: 80px;
+}
+
+.boton-ps2 {
+    right: 140px;
 }
         .seleccionados-container {
             position: fixed;
@@ -162,17 +168,17 @@
   <div class="header">
     <input type="text" id="busqueda" placeholder="Buscar juego..." onkeyup="filtrarJuegos()">
     <input type="text" id="nombre-usuario" placeholder="Tu nombre" required>
-    <button id="boton-enviar" onclick="enviarCSV()">Enviar lista de juegos2</button>
+    <button id="boton-enviar" onclick="enviarCSV()">Enviar lista de juegos</button>
 </div>
 
     <div class="catalogo" id="catalogo"></div>
 
     <div class="boton-flotante" onclick="toggleSeleccionados()">📋
-        <div class="boton-filtro" id="filtro-ps1" onclick="filtrarPorFormato('CD')">
-    <img src="https://github.com/tecnomaslanus/ps2/blob/main/imagenes/PS1LOGO.png" alt="PS1">
+      <div class="boton-filtro boton-ps1" onclick="filtrarPorFormato('CD')">
+    <img src="https://github.com/tecnomaslanus/ps2/blob/main/imagenes/PS1LOGO.png" alt="PS1" />
 </div>
-<div class="boton-filtro" id="filtro-ps2" onclick="filtrarPorFormato('DVD')">
-    <img src="https://github.com/tecnomaslanus/ps2/blob/main/imagenes/PS2LOGO.png" alt="PS2">
+<div class="boton-filtro boton-ps2" onclick="filtrarPorFormato('DVD')">
+    <img src="https://github.com/tecnomaslanus/ps2/blob/main/imagenes/PS2LOGO.png" alt="PS2" />
 </div>
  <span id="contador-juegos" class="contador-burbuja">0</span>
         </div>
@@ -202,7 +208,7 @@ let tipo = partes[2]?.trim() || "";
                             let item = document.createElement('div');
                             item.classList.add('item');
                             item.setAttribute('data-nombre', nombre);
-item.setAttribute('data-formato', tipo);
+item.setAttribute('data-tipo', tipo);  // tipo = CD o DVD
                            let img = document.createElement('img');
 img.src = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img/${codigo}_COV.jpg`;
 img.onerror = function () {
@@ -240,9 +246,9 @@ img.onerror = function () {
 }
 
 
-        function filtrarPorFormato(formato) {
+function filtrarPorFormato(formato) {
     document.querySelectorAll('.item').forEach(item => {
-        const tipo = item.getAttribute('data-formato');
+        const tipo = item.getAttribute('data-tipo');
         item.style.display = (tipo === formato) ? '' : 'none';
     });
 }
