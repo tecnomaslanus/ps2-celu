@@ -137,7 +137,7 @@
   <div class="header">
     <input type="text" id="busqueda" placeholder="Buscar juego..." onkeyup="filtrarJuegos()">
     <input type="text" id="nombre-usuario" placeholder="Tu nombre" required>
-    <button id="boton-enviar" onclick="enviarCSV()">Enviar lista de juegos2</button>
+    <button id="boton-enviar" onclick="enviarCSV()">Enviar lista de juegos23</button>
 </div>
 
     <div class="catalogo" id="catalogo"></div>
@@ -156,43 +156,51 @@
             contenedor.style.display = contenedor.style.display === 'none' ? 'block' : 'none';
         }
 
-        function cargarCatalogo() {
-            fetch('list.csv')
-                .then(response => response.text())
-                .then(data => {
-                    let juegos = data.split('\n');
-                    juegos.forEach((juego, index) => {
-                        if (index > 0 && juego.trim() !== '') {
-                            let partes = juego.split(',');
-                            let nombre = partes[0]?.trim() || "Desconocido";
-                            let codigo = partes[1]?.trim() || "000";
+       function cargarCatalogo() {
+    fetch('list.csv')
+        .then(response => response.text())
+        .then(data => {
+            let juegos = data.split('\n');
+            juegos.forEach((juego, index) => {
+                if (index > 0 && juego.trim() !== '') {
+                    let partes = juego.split(',');
+                    let nombre = partes[0]?.trim() || "Desconocido";
+                    let codigo = partes[1]?.trim() || "000";
 
-                            let item = document.createElement('div');
-                            item.classList.add('item');
-                            item.setAttribute('data-nombre', nombre);
+                    let item = document.createElement('div');
+                    item.classList.add('item');
+                    item.setAttribute('data-nombre', nombre);
 
-                           let img = document.createElement('img');
-img.src = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img/${codigo}_COV.jpg`;
-img.onerror = function () {
-    this.onerror = null;
-    this.src = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/${codigo}_COV.jpg`;
-};
+                    let img = document.createElement('img');
+                    img.src = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img/${codigo}_COV.jpg`;
 
-                            let p = document.createElement('p');
-                            p.textContent = nombre;
-
-                            item.appendChild(img);
-                            item.appendChild(p);
-                            document.getElementById('catalogo').appendChild(item);
-
-                            item.onclick = () => {
-                                item.classList.toggle('selected');
-                                actualizarContador();
+                    img.onerror = function () {
+                        img.onerror = function () {
+                            img.onerror = function () {
+                                img.onerror = null;
+                                img.src = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/${codigo}_COV.png`;
                             };
-                        }
-                    });
-                });
-        }
+                            img.src = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img/${codigo}_COV.png`;
+                        };
+                        img.src = `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/${codigo}_COV.jpg`;
+                    };
+
+                    let p = document.createElement('p');
+                    p.textContent = nombre;
+
+                    item.appendChild(img);
+                    item.appendChild(p);
+                    document.getElementById('catalogo').appendChild(item);
+
+                    item.onclick = () => {
+                        item.classList.toggle('selected');
+                        actualizarContador();
+                    };
+                }
+            });
+        });
+}
+
 
       function actualizarContador() {
     actualizarListaSeleccionados();
